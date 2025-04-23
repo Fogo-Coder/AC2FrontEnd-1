@@ -1,0 +1,66 @@
+<form [formGroup]="formulario" (ngSubmit)="enviarFormulario()">
+    <label for="evento">Evento:</label>
+    <select id="evento" formControlName="evento">
+      <option *ngFor="let evento of eventos" [value]="evento">{{ evento }}</option>
+    </select>
+    <div *ngIf="formulario.get('evento')?.invalid && formulario.get('evento')?.touched">
+      <small>Selecione um evento.</small>
+    </div>
+  
+    <label for="modalidade">Modalidade:</label>
+    <select id="modalidade" formControlName="modalidade">
+      <option *ngFor="let modalidade of modalidades" [value]="modalidade">{{ modalidade }}</option>
+    </select>
+    <div *ngIf="formulario.get('modalidade')?.invalid && formulario.get('modalidade')?.touched">
+      <small>Selecione a modalidade.</small>
+    </div>
+  
+    <label for="dataInicio">Data de Início:</label>
+    <input type="date" id="dataInicio" formControlName="dataInicio">
+    <div *ngIf="formulario.get('dataInicio')?.invalid && formulario.get('dataInicio')?.touched">
+      <small>Insira uma data válida.</small>
+    </div>
+  
+    <label for="dataTermino">Data de Término:</label>
+    <input type="date" id="dataTermino" formControlName="dataTermino">
+    <div *ngIf="formulario.get('dataTermino')?.hasError('dataInvalida')">
+      <small>A data de término deve ser posterior à data de início.</small>
+    </div>
+  
+    <h3>Lista de Participantes</h3>
+    <button type="button" (click)="adicionarParticipante()">Adicionar Participante</button>
+  
+    <div formArrayName="participantes">
+      <div *ngFor="let participante of participantes.controls; let i = index" [formGroupName]="i">
+        <label>Nome:</label>
+        <input type="text" formControlName="nome">
+        <div *ngIf="participante.get('nome')?.invalid && participante.get('nome')?.touched" class="invalid">
+          <small>Nome obrigatório.</small>
+        </div>
+  
+        <label>Email:</label>
+        <input type="email" formControlName="email">
+        <div *ngIf="participante.get('email')?.invalid && participante.get('email')?.touched" class="invalid">
+          <small>Insira um e-mail válido.</small>
+        </div>
+  
+        <label>CPF:</label>
+        <input type="text" formControlName="cpf" placeholder="XXX.XXX.XXX-XX">
+        <div *ngIf="participante.get('cpf')?.invalid && participante.get('cpf')?.touched" class="invalid">
+          <small>Formato de CPF inválido. Use XXX.XXX.XXX-XX.</small>
+        </div>
+  
+        <label>Tipo de Ingresso:</label>
+        <select formControlName="ingresso">
+          <option *ngFor="let ingresso of ingressos" [value]="ingresso">{{ ingresso }}</option>
+        </select>
+        <div *ngIf="participante.get('ingresso')?.invalid && participante.get('ingresso')?.touched">
+          <small>Selecione um tipo de ingresso.</small>
+        </div>
+  
+        <button type="button" (click)="removerParticipante(i)">Remover</button>
+      </div>
+    </div>
+  
+    <button type="submit" [disabled]="formulario.invalid">Enviar</button>
+  </form>
